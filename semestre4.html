@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cuarto Semestre - Agrivoltaica</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* ===== GLOBAL PALETTE & DESIGN SYSTEM (Preservado de index.html) ===== */
+        :root {
+            --c-seal-brown: #321414;
+            --c-army-green: #4B5320;
+            --c-grasshopper: #7A7229;
+            --c-sandstorm: #ECD540;
+            --c-dark-olive: #3C341F;
+            --c-brass: #B5A642;
+            --c-citron: #DDD06A;
+            --c-caput: #592720;
+            --c-white: #FFFFFF;
+            
+            --bg-pure-white: #FFFFFF;
+            --text-dark: var(--c-seal-brown);
+            --text-light: #F5F5F7;
+
+            --apple-nav-bg: rgba(250, 252, 245, 0.75);
+            --apple-nav-border: rgba(60, 52, 31, 0.08); 
+            --sf-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: var(--sf-font);
+            background: var(--c-seal-brown);
+            color: var(--text-light);
+            padding-top: 44px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* ===== APPLE-STYLE NAVIGATION ===== */
+        .menu-container {
+            width: 100%; height: 44px; background: var(--apple-nav-bg);
+            backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--apple-nav-border);
+            position: fixed; top: 0; left: 0; z-index: 9999; transition: background 0.3s ease;
+        }
+        .menu {
+            display: flex; justify-content: space-between; align-items: center;
+            height: 44px; max-width: 980px; margin: 0 auto; padding: 0 22px; position: relative;
+        }
+        .logo-img { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+        .logo-img img { height: 28px; width: auto; display: block; transition: opacity 0.3s ease; }
+        .logo-img:hover img { opacity: 0.7; }
+        #menu-toggle { display: none; }
+        .menu-icon { display: none; height: 18px; cursor: pointer; z-index: 1001; opacity: 0.8; transition: opacity 0.2s ease; }
+        .menu-icon:hover { opacity: 1; }
+
+        .navbar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        .navbar ul { display: flex; list-style: none; margin: 0; padding: 0; gap: 0; align-items: center; }
+        .navbar li { position: relative; }
+        .navbar a {
+            color: var(--c-seal-brown); text-decoration: none; font-size: 12px; font-weight: 500;
+            letter-spacing: -0.01em; padding: 0 12px; line-height: 44px; display: block;
+            opacity: 0.8; transition: opacity 0.15s ease; white-space: nowrap;
+        }
+        .navbar a:hover, .navbar a.active { opacity: 1; font-weight: 700; color: var(--c-grasshopper); }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+        .section-padding { padding: 80px 0; } 
+        
+        .section-title {
+            font-size: clamp(28px, 4vw, 42px); font-weight: 700; letter-spacing: -0.03em;
+            text-align: center; margin: 0 0 40px; line-height: 1.1; position: relative; z-index: 2;
+            color: var(--c-sandstorm);
+        }
+
+        /* ===== HERO BANNER ===== */
+        .header-banner-container {
+            position: relative; width: 100%; min-height: 100vh;
+            background: linear-gradient(160deg, var(--c-dark-olive) 0%, var(--c-army-green) 50%, var(--c-seal-brown) 100%);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            margin-top: -44px; padding-top: 44px;
+        }
+        .header-banner-container::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 120%, rgba(236, 213, 64, 0.15) 0%, transparent 60%);
+            z-index: 0;
+        }
+
+        .tree-container { position: absolute; bottom: -10px; z-index: 1; transform-origin: bottom center; pointer-events: none; }
+        .tree-left { left: -30px; width: 180px; height: 300px; animation: swayLeft 6s ease-in-out infinite alternate; }
+        .tree-left-2 { left: 60px; bottom: -20px; width: 140px; height: 240px; animation: swayLeft 5s ease-in-out infinite alternate-reverse; opacity: 0.85; }
+        .tree-right { right: -30px; width: 200px; height: 320px; animation: swayRight 7s ease-in-out infinite alternate; }
+        .tree-right-2 { right: 80px; bottom: -25px; width: 150px; height: 260px; animation: swayRight 6s ease-in-out infinite alternate-reverse; opacity: 0.9; }
+
+        @keyframes swayLeft { 0% { transform: rotate(-2deg); } 100% { transform: rotate(4deg); } }
+        @keyframes swayRight { 0% { transform: rotate(-4deg); } 100% { transform: rotate(2deg); } }
+
+        .banner-overlay { position: relative; z-index: 2; text-align: center; padding: 0 20px; max-width: 900px; }
+        .banner-title {
+            font-size: clamp(40px, 7vw, 75px); font-weight: 800; color: var(--text-light);
+            letter-spacing: -0.04em; margin: 0 0 16px; text-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        .banner-subtitle {
+            font-size: clamp(18px, 2.5vw, 24px); color: var(--c-sandstorm); font-weight: 500;
+            margin: 0 0 40px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ===== TIMELINE & EVOLUTION SECTION ===== */
+        .timeline-section {
+            background: var(--c-dark-olive); position: relative; overflow: hidden;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        /* Floating Orbs for Ambience */
+        .orb { position: absolute; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.3; animation: floatOrb 12s infinite alternate ease-in-out; pointer-events: none; }
+        .orb-1 { width: 400px; height: 400px; background: var(--c-army-green); top: 10%; left: -100px; }
+        .orb-2 { width: 500px; height: 500px; background: var(--c-grasshopper); bottom: 20%; right: -150px; animation-delay: -6s; }
+        @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(40px, 40px) scale(1.1); } }
+
+        /* Evolución Hero Card */
+        .evolution-card {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(236, 213, 64, 0.2); border-top: 1px solid rgba(236, 213, 64, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4); border-radius: 24px; padding: 50px; text-align: center;
+            margin-bottom: 80px; position: relative; z-index: 2; transition: transform 0.4s ease;
+        }
+        .evolution-card:hover { transform: translateY(-5px); border-color: rgba(236, 213, 64, 0.6); }
+        .evolution-icon {
+            font-size: 48px; display: inline-block; animation: spinSlow 8s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+        .evolution-card h3 { color: var(--c-white); font-size: 28px; margin: 0 0 10px; }
+        .evolution-card h4 { color: var(--c-sandstorm); font-size: 18px; font-weight: 500; margin: 0 0 25px; letter-spacing: 1px; text-transform: uppercase; }
+        .evolution-card p { color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.7; max-width: 800px; margin: 0 auto; }
+
+        /* Timeline Flow */
+        .timeline { position: relative; max-width: 1000px; margin: 0 auto; z-index: 2; }
+        .timeline::after {
+            content: ''; position: absolute; width: 2px; background: rgba(236, 213, 64, 0.3);
+            top: 0; bottom: 0; left: 50%; margin-left: -1px; z-index: 1;
+        }
+
+        .timeline-item { padding: 10px 40px; position: relative; background: inherit; width: 50%; box-sizing: border-box; margin-bottom: 60px; }
+        .timeline-item::after {
+            content: '✦'; position: absolute; width: 40px; height: 40px; right: -20px; background: var(--c-seal-brown);
+            border: 2px solid var(--c-sandstorm); top: 15px; border-radius: 50%; z-index: 2;
+            color: var(--c-sandstorm); display: flex; align-items: center; justify-content: center; font-size: 18px;
+            box-shadow: 0 0 15px rgba(236, 213, 64, 0.5);
+        }
+        .left { left: 0; text-align: right; }
+        .right { left: 50%; text-align: left; }
+        .right::after { left: -20px; }
+
+        .timeline-content {
+            padding: 40px; background: rgba(0, 0, 0, 0.2); border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            position: relative; transition: all 0.4s ease;
+        }
+        .timeline-content:hover { background: rgba(255, 255, 255, 0.03); transform: translateY(-5px); border-color: rgba(255,255,255,0.15); }
+        
+        .corte-badge {
+            display: inline-block; background: var(--c-grasshopper); color: #fff; padding: 6px 16px;
+            border-radius: 50px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px;
+        }
+        .timeline-content h3 { font-size: 24px; color: var(--c-sandstorm); margin: 0 0 15px; line-height: 1.2; }
+        .timeline-content p { font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.6; margin-bottom: 20px; }
+        
+        .tech-list { text-align: left; list-style: none; padding: 0; margin: 0 0 25px; }
+        .tech-list li { position: relative; padding-left: 24px; margin-bottom: 12px; font-size: 15px; color: rgba(255,255,255,0.9); line-height: 1.5; }
+        .tech-list li::before { content: '✓'; position: absolute; left: 0; color: var(--c-citron); font-weight: bold; }
+        .left .tech-list { text-align: right; }
+        .left .tech-list li { padding-left: 0; padding-right: 24px; }
+        .left .tech-list li::before { left: auto; right: 0; }
+
+        /* Image Placeholders (Hologram style) */
+        .image-placeholder {
+            width: 100%; height: 220px; border: 2px dashed rgba(236, 213, 64, 0.4);
+            border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: linear-gradient(45deg, rgba(60, 52, 31, 0.5), rgba(75, 83, 32, 0.3));
+            position: relative; overflow: hidden; transition: all 0.3s ease;
+        }
+        .image-placeholder:hover { border-color: var(--c-sandstorm); background: linear-gradient(45deg, rgba(60, 52, 31, 0.8), rgba(75, 83, 32, 0.5)); }
+        .image-placeholder span { font-size: 30px; margin-bottom: 10px; }
+        .image-placeholder p { margin: 0; font-size: 12px; font-weight: 600; color: var(--c-citron); text-transform: uppercase; letter-spacing: 1px; text-align: center; padding: 0 15px; }
+        .image-placeholder .caption { position: absolute; bottom: 10px; font-size: 11px; color: rgba(255,255,255,0.5); font-weight: normal; }
+
+        /* ===== DOCUMENTATION SECTION ===== */
+        .docs-section {
+            background: var(--c-seal-brown); position: relative; padding: 80px 22px;
+            background-image: radial-gradient(circle at center, rgba(122, 114, 41, 0.1) 0%, transparent 70%);
+        }
+        .pdf-card {
+            max-width: 700px; margin: 0 auto; background: var(--c-dark-olive); border-radius: 20px;
+            padding: 40px; display: flex; align-items: center; gap: 30px;
+            border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            transition: transform 0.4s ease; cursor: pointer; text-decoration: none; color: inherit;
+        }
+        .pdf-card:hover { transform: translateY(-8px); border-color: var(--c-sandstorm); box-shadow: 0 25px 50px rgba(236, 213, 64, 0.15); }
+        .pdf-icon {
+            width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 16px;
+            display: flex; align-items: center; justify-content: center; font-size: 40px;
+            border: 1px solid rgba(255,255,255,0.1); color: var(--c-sandstorm); flex-shrink: 0;
+            position: relative;
+        }
+        .pdf-card:hover .pdf-icon { animation: pulseIcon 1.5s infinite; background: rgba(236, 213, 64, 0.1); }
+        @keyframes pulseIcon { 0% { box-shadow: 0 0 0 0 rgba(236, 213, 64, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(236, 213, 64, 0); } 100% { box-shadow: 0 0 0 0 rgba(236, 213, 64, 0); } }
+        
+        .pdf-info h3 { font-size: 22px; color: #fff; margin: 0 0 10px; }
+        .pdf-info p { margin: 0 0 15px; color: rgba(255,255,255,0.7); font-size: 15px; }
+        .tag-group span { display: inline-block; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 4px; font-size: 11px; margin-right: 5px; color: var(--c-citron); text-transform: uppercase; }
+
+        /* ===== MULTIMEDIA SECTION ===== */
+        .video-section {
+            background: var(--c-dark-olive); padding: 80px 22px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: center; position: relative;
+        }
+        .video-wrapper {
+            max-width: 800px; margin: 40px auto 0; aspect-ratio: 16/9; background: #000;
+            border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><rect width="100" height="100" fill="none" stroke="%23FFF" stroke-width="2"/></svg>');
+            background-size: 40px;
+        }
+        .play-btn {
+            width: 90px; height: 90px; background: rgba(236, 213, 64, 0.9); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 40px; padding-left: 8px;
+            color: var(--c-seal-brown); cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 30px rgba(236, 213, 64, 0.5);
+        }
+        .play-btn:hover { transform: scale(1.1); background: #fff; box-shadow: 0 0 40px rgba(255,255,255,0.6); }
+
+        /* ===== TECH SPECS (Quick View) ===== */
+        .specs-section { background: var(--c-seal-brown); padding: 80px 22px; position: relative; }
+        .tech-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px;
+            max-width: 1000px; margin: 0 auto;
+        }
+        .spec-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 35px 25px; text-align: center; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .spec-card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.06); border-color: var(--c-sandstorm); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        .spec-icon { font-size: 45px; margin-bottom: 20px; display: inline-block; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); }
+        .spec-card h4 { font-size: 20px; color: var(--c-white); margin: 0 0 15px; }
+        .spec-card p { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; margin: 0; }
+
+        /* ===== CTA FOOTER ===== */
+        .cta-section {
+            padding: 80px 22px; text-align: center;
+            background: linear-gradient(135deg, var(--c-grasshopper) 0%, var(--c-army-green) 100%);
+            color: #fff; border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-secondary {
+            display: inline-block; background: transparent; border: 2px solid #fff; color: #fff;
+            font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 50px; text-decoration: none;
+            transition: all 0.3s ease; margin-top: 20px;
+        }
+        .btn-secondary:hover { background: #fff; color: var(--c-army-green); transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+
+        /* ===== ANIMATIONS ===== */
+        .slide-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .slide-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .slide-right { opacity: 0; transform: translateX(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .fade-in { opacity: 0; transform: scale(0.95); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        
+        .slide-up.visible, .slide-left.visible, .slide-right.visible, .fade-in.visible { opacity: 1; transform: translate(0) scale(1); }
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .menu { padding: 0 16px; }
+            .menu-icon { display: block; }
+            .navbar {
+                position: fixed; top: 0; right: -100%; left: auto; transform: none; width: 260px; height: 100vh;
+                background: rgba(28, 28, 30, 0.97); backdrop-filter: blur(20px); flex-direction: column; justify-content: center;
+                transition: right 0.4s cubic-bezier(0.65, 0, 0.35, 1); z-index: 9998; display: flex;
+            }
+            .navbar ul { flex-direction: column; gap: 8px; text-align: center; }
+            .navbar a { color: #f5f5f7; font-size: 17px; padding: 12px 30px; opacity: 0.86; }
+            #menu-toggle:checked ~ .navbar { right: 0; }
+            
+            .timeline::after { left: 31px; }
+            .timeline-item { width: 100%; padding-left: 80px; padding-right: 0; text-align: left; }
+            .timeline-item::after { left: 11px; right: auto; }
+            .right { left: 0; }
+            .left .tech-list { text-align: left; }
+            .left .tech-list li { padding-left: 24px; padding-right: 0; }
+            .left .tech-list li::before { left: 0; right: auto; }
+            
+            .pdf-card { flex-direction: column; text-align: center; padding: 30px 20px; }
+            .evolution-card { padding: 30px 20px; }
+            .tree-container { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MENÚ APPLE-STYLE -->
+    <div class="menu-container">
+        <div class="menu">
+            <a href="index.html" class="logo-img">
+                <img src="img/logo.png" alt="Life Bracelet Logo" class="logo-icon" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span style=\'color: var(--c-seal-brown); font-weight: bold; font-size: 16px;\'>Agrivoltaica</span>');"/>
+            </a>
+            <input type="checkbox" id="menu-toggle">
+            <label for="menu-toggle">
+                <img src="img/menu.png" class="menu-icon" alt="Menú" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span style=\'color: var(--c-seal-brown); font-size: 20px;\'>☰</span>');"/>
+            </label>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="novedades.html">Novedades</a></li>
+                    <li><a href="semestres.html" class="active">Semestres</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <header class="header">
+        <div class="header-banner-container fade-in">
+            <!-- Árboles Animados (Preservados del index) -->
+            <div class="tree-container tree-left">
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none" width="100%" height="100%">
+                    <rect x="45" y="150" width="10" height="50" fill="#321414" />
+                    <polygon points="50,10 90,80 10,80" fill="#7A7229" />
+                    <polygon points="50,50 95,120 5,120" fill="#4B5320" />
+                    <polygon points="50,90 100,160 0,160" fill="#4B5320" />
+                </svg>
+            </div>
+            <div class="tree-container tree-left-2">
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none" width="100%" height="100%">
+                    <rect x="46" y="160" width="8" height="40" fill="#321414" />
+                    <polygon points="50,20 85,85 15,85" fill="#4B5320" />
+                    <polygon points="50,65 90,130 10,130" fill="#7A7229" />
+                    <polygon points="50,110 95,170 5,170" fill="#4B5320" />
+                </svg>
+            </div>
+            <div class="tree-container tree-right">
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none" width="100%" height="100%">
+                    <rect x="44" y="150" width="12" height="50" fill="#321414" />
+                    <polygon points="50,15 95,85 5,85" fill="#4B5320" />
+                    <polygon points="50,55 100,125 0,125" fill="#3C341F" />
+                    <polygon points="50,100 105,170 -5,170" fill="#4B5320" />
+                </svg>
+            </div>
+            <div class="tree-container tree-right-2">
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none" width="100%" height="100%">
+                    <rect x="46" y="160" width="8" height="40" fill="#321414" />
+                    <polygon points="50,25 85,85 15,85" fill="#7A7229" />
+                    <polygon points="50,65 90,130 10,130" fill="#4B5320" />
+                    <polygon points="50,110 95,170 5,170" fill="#7A7229" />
+                </svg>
+            </div>
+
+            <div class="banner-overlay">
+                <h1 class="banner-title">Cuarto Semestre</h1>
+                <p class="banner-subtitle">Integrando IoT y Energía Solar para la Transformación de la Automatización</p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <span style="background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px);">Evolución</span>
+                    <span style="background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px);">Corte 1</span>
+                    <span style="background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px);">Corte 2</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- TIMELINE & EVOLUCIÓN -->
+    <section class="section-padding timeline-section">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        
+        <div class="container">
+            <!-- 1. Evolución del Proyecto -->
+            <div class="evolution-card slide-up">
+                <span class="evolution-icon">🔄</span>
+                <h3>Evolución del Proyecto: El Cambio de Rumbo</h3>
+                <h4>Alineación con la Automatización Industrial</h4>
+                <p><strong>🚀 Transición a Agrivoltaica:</strong> Durante los primeros semestres de nuestra formación, el equipo trabajó en una propuesta de investigación distinta. Sin embargo, al llegar al 4to semestre, decidimos dar un giro profesional.</p>
+                <p style="margin-top: 15px;">Migramos hacia el proyecto Agrivoltaica para enfrentar un desafío técnico real: la convergencia entre la electrónica de potencia, el control de procesos y el Internet de las Cosas (IoT). Este cambio nos permite aplicar los pilares de nuestra carrera en una solución sostenible y escalable para el campo.</p>
+            </div>
+
+            <!-- Timeline Cuts -->
+            <div class="timeline">
+                
+                <!-- 2. Corte 1 -->
+                <div class="timeline-item left slide-left">
+                    <div class="timeline-content">
+                        <span class="corte-badge">Corte 1</span>
+                        <h3>📊 Investigación y Análisis (Módulo IoT)</h3>
+                        <p><strong>Objetivo:</strong> Determinar la viabilidad del sistema y caracterizar la fuente de energía.</p>
+                        <p style="color: var(--c-citron); font-weight: 600; margin-bottom: 20px;">🔍 Fase Única Ejecutada: Análisis del Sistema</p>
+                        
+                        <p>En esta etapa inicial del módulo de Internet de las Cosas (IoT), nos centramos exclusivamente en la fase de diagnóstico:</p>
+                        <ul class="tech-list">
+                            <li><strong>Estudio Fotovoltaico:</strong> Investigación del rendimiento de celdas solares en entornos controlados (invernaderos).</li>
+                            <li><strong>Caracterización Técnica:</strong> Análisis de las fichas técnicas y comportamiento del panel solar seleccionado.</li>
+                            <li><strong>Validación de Campo:</strong> Mediciones manuales con multímetro para establecer la línea base de generación.</li>
+                            <li><strong>Resultados Obtenidos:</strong> Registros estables entre 19.2V y 20.5V durante picos de radiación solar.</li>
+                        </ul>
+
+                        <!-- Image Placeholder para la foto del panel -->
+                        <div class="image-placeholder">
+                            <span>📸</span>
+                            <p>FOTO DEL PANEL SOLAR EN MEDICIÓN</p>
+                            <span class="caption">Validación de voltaje de circuito abierto en el panel solar bajo radiación directa.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Corte 2 -->
+                <div class="timeline-item right slide-right">
+                    <div class="timeline-content">
+                        <span class="corte-badge" style="background: var(--c-sandstorm); color: var(--c-seal-brown);">Corte 2</span>
+                        <h3>⚙️ Ingeniería de Hardware y Gestión de Potencia</h3>
+                        <p><strong>Objetivo:</strong> Implementación del nodo sensor ESP32 y estabilización de la alimentación.</p>
+                        <p style="color: var(--c-citron); font-weight: 600; margin-bottom: 20px;">⚡ Implementación Práctica</p>
+                        
+                        <p>Aquí es donde el proyecto cobra vida técnica. Tras el análisis, pasamos a resolver el problema de la alimentación y la captura de datos.</p>
+                        
+                        <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 3px solid var(--c-sandstorm);">
+                            <p style="margin: 0 0 10px; color: #fff;"><strong>Alimentación y Regulación: La Decisión Técnica</strong></p>
+                            <p style="margin: 0; font-size: 14px;">Para alimentar nuestra ESP32 (3.3V) desde la salida del panel (20V), descartamos el uso de un divisor de voltaje resistivo. Aunque es útil para medir señales, para alimentación es ineficiente y peligroso para el microcontrolador, ya que no soporta los picos de corriente del módulo WiFi y desperdicia energía en forma de calor.</p>
+                        </div>
+
+                        <p><strong>Nuestra Solución: El Módulo LM2596 (Buck Converter)</strong><br>Optamos por el regulador conmutado LM2596. Respondemos a la crítica técnica sobre su consumo interno con fundamentos de ingeniería:</p>
+                        <ul class="tech-list">
+                            <li><strong>Robustez:</strong> A diferencia de reguladores más modernos y frágiles, el LM2596 es altamente resistente a picos de tensión, ideal para un entorno industrial/rural.</li>
+                            <li><strong>Eficiencia Térmica:</strong> Maneja el diferencial de voltaje (de 20V a 5V/3.3V) con una disipación de calor controlada.</li>
+                            <li><strong>Justificación:</strong> Dado que el panel genera un excedente de energía, el consumo mínimo del regulador (quiescent current) es insignificante comparado con la estabilidad y seguridad que brinda a la ESP32.</li>
+                        </ul>
+
+                        <!-- Image Placeholder para conexión -->
+                        <div class="image-placeholder">
+                            <span>🔌</span>
+                            <p>CONEXIÓN DEL PANEL CON EL REGULADOR Y ESP32</p>
+                            <span class="caption">Prototipo del sistema de gestión de potencia y procesamiento de datos.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. DOCUMENTACIÓN (Archivo Flotante) -->
+    <section class="docs-section">
+        <div class="container">
+            <h2 class="section-title slide-up">📄 Repositorio de Documentación</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;" class="slide-up delay-100">
+                Documentación Técnica del Proyecto. Aquí puedes consultar el informe detallado que sustenta las fases de análisis y el diseño del sistema.
+            </p>
+            
+            <a href="#" class="pdf-card slide-up delay-200">
+                <div class="pdf-icon">
+                    📕
+                </div>
+                <div class="pdf-info">
+                    <h3>VER DOCUMENTO PDF - PROYECTO AGRIVOLTAICA</h3>
+                    <p>Incluye: Resumen, Abstract, Fases de Desarrollo y Referencias Bibliográficas.</p>
+                    <div class="tag-group">
+                        <span>Investigación</span>
+                        <span>Módulo IoT</span>
+                        <span>Semestre 4</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- 5. MULTIMEDIA (Video Mockup) -->
+    <section class="video-section">
+        <div class="container">
+            <h2 class="section-title slide-up" style="margin-bottom: 15px;">🎥 Sustentación Técnica</h2>
+            <p style="color: rgba(255,255,255,0.8); font-size: 18px; max-width: 700px; margin: 0 auto;" class="slide-up delay-100">
+                Presentación de Avances - Segundo Corte
+            </p>
+            <p style="color: var(--c-citron); font-size: 15px; max-width: 700px; margin: 15px auto 0;" class="slide-up delay-200">
+                <strong>Descripción:</strong> El equipo explica la arquitectura del sistema, la migración tecnológica y la importancia de la eficiencia energética en la automatización rural.
+            </p>
+
+            <div class="video-wrapper slide-up delay-300">
+                <!-- Este botón simula el Play. Aquí puedes envolver un iframe de YouTube más adelante -->
+                <div class="play-btn">▶</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. ESPECIFICACIONES TÉCNICAS (Quick View Grid) -->
+    <section class="specs-section">
+        <div class="container">
+            <h2 class="section-title slide-up">🛠️ Especificaciones Técnicas <span style="display:block; font-size: 16px; font-weight: normal; color: #fff; margin-top: 10px;">(Quick View) - Resumen de componentes clave</span></h2>
+            
+            <div class="tech-grid">
+                <div class="spec-card slide-up">
+                    <span class="spec-icon">🧠</span>
+                    <h4>ESP32</h4>
+                    <p>Cerebro del sistema, procesamiento Dual Core y envío de datos vía WiFi.</p>
+                </div>
+                
+                <div class="spec-card slide-up delay-100">
+                    <span class="spec-icon">⚡</span>
+                    <h4>LM2596</h4>
+                    <p>Regulación de voltaje de alta eficiencia (Step-Down).</p>
+                </div>
+                
+                <div class="spec-card slide-up delay-200">
+                    <span class="spec-icon">🛡️</span>
+                    <h4>Diodos de Protección</h4>
+                    <p>Prevención de corrientes de retorno hacia el panel.</p>
+                </div>
+                
+                <div class="spec-card slide-up delay-300">
+                    <span class="spec-icon">📉</span>
+                    <h4>Divisor de Tensión</h4>
+                    <p>Escalamiento de la señal de 20V a 3.3V para monitoreo (no alimentación).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. CTA / FOOTER -->
+    <section class="cta-section">
+        <div class="container fade-in">
+            <h2 style="font-size: clamp(24px, 4vw, 32px); margin: 0 0 15px;">¿Interesado en la arquitectura completa?</h2>
+            <p style="font-size: 16px; color: rgba(255,255,255,0.9); margin: 0 0 20px;">Explora la tecnología base y cómo conectamos cada componente en el campo.</p>
+            <a href="index.html#tecnologia" class="btn-secondary">⬅ Volver a la Tecnología</a>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animaciones al hacer scroll (Intersection Observer preservado)
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 
+            };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.slide-up, .slide-left, .slide-right, .fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Lógica para cerrar menú en móviles si se hace clic fuera
+            const menuToggle = document.getElementById('menu-toggle');
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && menuToggle.checked) {
+                    if (!e.target.closest('.menu')) {
+                        menuToggle.checked = false;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

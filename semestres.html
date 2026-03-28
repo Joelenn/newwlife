@@ -3,12 +3,349 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="img/logo1.png">
     <title>Life Bracelet - Trayectoria del Proyecto</title>
-    <link rel="stylesheet" href="css/style.css" /> 
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* ===== GLOBAL PALETTE & DESIGN SYSTEM (Exactamente igual a index.html) ===== */
+        :root {
+            --c-seal-brown: #321414;
+            --c-army-green: #4B5320;
+            --c-grasshopper: #7A7229;
+            --c-sandstorm: #ECD540;
+            --c-dark-olive: #3C341F;
+            --c-brass: #B5A642;
+            --c-citron: #DDD06A;
+            --c-caput: #592720;
+            --c-white: #FFFFFF;
+            
+            --bg-pure-white: #FFFFFF;
+            --text-dark: var(--c-seal-brown);
+            --text-light: #F5F5F7;
+
+            --apple-nav-bg: rgba(250, 252, 245, 0.75);
+            --apple-nav-border: rgba(60, 52, 31, 0.08); 
+            --sf-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--sf-font);
+            background: var(--c-seal-brown); 
+            color: var(--text-light);
+            padding-top: 44px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* ===== APPLE-STYLE NAVIGATION ===== */
+        .menu-container {
+            width: 100%;
+            height: 44px;
+            background: var(--apple-nav-bg);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--apple-nav-border);
+            position: fixed;
+            top: 0; left: 0; z-index: 9999;
+            transition: background 0.3s ease;
+        }
+
+        .menu {
+            display: flex; justify-content: space-between; align-items: center;
+            height: 44px; max-width: 980px; margin: 0 auto; padding: 0 22px; position: relative;
+        }
+
+        .logo-img { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+        .logo-img img { height: 28px; width: auto; display: block; transition: opacity 0.3s ease; }
+        .logo-img:hover img { opacity: 0.7; }
+        #menu-toggle { display: none; }
+        .menu-icon { display: none; height: 18px; cursor: pointer; z-index: 1001; opacity: 0.8; transition: opacity 0.2s ease; }
+        .menu-icon:hover { opacity: 1; }
+
+        .navbar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        .navbar ul { display: flex; list-style: none; margin: 0; padding: 0; gap: 0; align-items: center; }
+        .navbar li { position: relative; }
+        
+        /* CORRECCIÓN APLICADA AQUÍ: Idéntico al index.html sin font-weight extra en el hover */
+        .navbar a {
+            color: var(--c-seal-brown); text-decoration: none; font-size: 12px; font-weight: 500;
+            letter-spacing: -0.01em; padding: 0 12px; line-height: 44px; display: block;
+            opacity: 0.8; transition: opacity 0.15s ease; white-space: nowrap;
+        }
+        .navbar a:hover, .navbar a.active { opacity: 1; }
+
+        /* ===== COMMON UTILS & TYPOGRAPHY ===== */
+        .container { max-width: 900px; margin: 0 auto; padding: 0 22px; }
+        
+        .section-padding { padding: 60px 0; } 
+        
+        .section-title {
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            text-align: center;
+            margin: 0 0 40px; 
+            line-height: 1.1;
+            position: relative;
+            z-index: 2;
+            color: var(--c-sandstorm);
+        }
+
+        /* ===== HERO BANNER (100vh PANTALLA COMPLETA) ===== */
+        .header-banner-container {
+            position: relative; width: 100%; min-height: 100vh;
+            background: linear-gradient(160deg, var(--c-dark-olive) 0%, var(--c-army-green) 50%, var(--c-seal-brown) 100%);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            margin-top: -44px; 
+            padding-top: 44px;
+        }
+
+        .header-banner-container::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 120%, rgba(236, 213, 64, 0.15) 0%, transparent 60%);
+            z-index: 0;
+        }
+
+        .tree-container { position: absolute; bottom: -10px; z-index: 1; transform-origin: bottom center; pointer-events: none; }
+        .tree-left { left: -30px; width: 180px; height: 300px; animation: swayLeft 6s ease-in-out infinite alternate; }
+        .tree-left-2 { left: 60px; bottom: -20px; width: 140px; height: 240px; animation: swayLeft 5s ease-in-out infinite alternate-reverse; opacity: 0.85; }
+        .tree-right { right: -30px; width: 200px; height: 320px; animation: swayRight 7s ease-in-out infinite alternate; }
+        .tree-right-2 { right: 80px; bottom: -25px; width: 150px; height: 260px; animation: swayRight 6s ease-in-out infinite alternate-reverse; opacity: 0.9; }
+
+        @keyframes swayLeft { 0% { transform: rotate(-2deg); } 100% { transform: rotate(4deg); } }
+        @keyframes swayRight { 0% { transform: rotate(-4deg); } 100% { transform: rotate(2deg); } }
+
+        .banner-overlay { position: relative; z-index: 2; text-align: center; padding: 0 20px; max-width: 800px; }
+        .banner-title {
+            font-size: clamp(40px, 7vw, 80px); font-weight: 800; color: var(--text-light);
+            letter-spacing: -0.04em; margin: 0 0 16px; text-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        .banner-subtitle {
+            font-size: clamp(16px, 2.5vw, 22px); color: rgba(255, 255, 255, 0.9);
+            margin: 0 0 40px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Indicador de Scroll */
+        .scroll-indicator {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            color: rgba(255, 255, 255, 0.6); font-size: 14px; font-weight: 500;
+            animation: bounce 2s infinite; z-index: 10;
+        }
+        .scroll-indicator::after {
+            content: '↓'; font-size: 20px; color: var(--c-sandstorm);
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-10px) translateX(-50%); }
+            60% { transform: translateY(-5px) translateX(-50%); }
+        }
+
+        /* ===== TIMELINE ACORDEÓN (SEMESTRES) ===== */
+        .semestres-section {
+            background: var(--c-seal-brown); position: relative; overflow: hidden;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Orbes de fondo sutiles para cohesión */
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.3;
+            animation: floatOrb 12s infinite alternate ease-in-out; pointer-events: none;
+        }
+        .orb-1 { width: 400px; height: 400px; background: var(--c-army-green); top: 10%; left: -100px; }
+        .orb-2 { width: 450px; height: 450px; background: var(--c-grasshopper); bottom: 10%; right: -100px; animation-delay: -5s; }
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 30px) scale(1.1); }
+        }
+
+        .timeline-container {
+            position: relative; z-index: 2; padding-left: 40px;
+        }
+        .timeline-container::before {
+            content: ''; position: absolute; left: 14px; top: 10px; bottom: 10px;
+            width: 2px; background: rgba(255, 255, 255, 0.1); border-radius: 2px;
+        }
+
+        .semestre-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px; margin-bottom: 20px; 
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+        }
+        
+        .semestre-card::before {
+            content: ''; position: absolute; left: -32px; top: 32px;
+            width: 14px; height: 14px; background: var(--c-dark-olive);
+            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+            transition: all 0.3s ease; z-index: 2;
+        }
+
+        .semestre-card:hover {
+            background: rgba(255, 255, 255, 0.06); border-color: rgba(181, 166, 66, 0.3);
+        }
+        .semestre-card:hover::before {
+            border-color: var(--c-sandstorm); box-shadow: 0 0 10px rgba(236, 213, 64, 0.5);
+        }
+
+        .semestre-card.active {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--c-sandstorm);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(236, 213, 64, 0.05);
+        }
+        .semestre-card.active::before {
+            background: var(--c-sandstorm); border-color: var(--c-sandstorm);
+            box-shadow: 0 0 15px rgba(236, 213, 64, 0.8);
+        }
+
+        .card-head {
+            padding: 24px 30px; display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; gap: 20px;
+        }
+
+        .card-title-group {
+            display: flex; align-items: center; gap: 20px; flex: 1;
+        }
+
+        .card-icon {
+            font-size: 24px; font-weight: 800; color: var(--c-seal-brown);
+            background: var(--c-sandstorm); width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; flex-shrink: 0; transition: transform 0.3s;
+        }
+        .semestre-card.active .card-icon {
+            transform: scale(1.1); box-shadow: 0 4px 15px rgba(236, 213, 64, 0.4);
+        }
+
+        .card-title h3 {
+            font-size: 20px; font-weight: 700; color: var(--text-light); margin: 0 0 4px;
+            transition: color 0.3s;
+        }
+        .semestre-card.active .card-title h3 { color: var(--c-sandstorm); }
+        
+        .card-sub {
+            font-size: 14px; color: rgba(255, 255, 255, 0.6); margin: 0; font-weight: 400;
+        }
+
+        .toggle-icon {
+            font-size: 24px; color: rgba(255, 255, 255, 0.5); transition: transform 0.4s ease, color 0.3s;
+        }
+        .semestre-card.active .toggle-icon {
+            transform: rotate(180deg); color: var(--c-sandstorm);
+        }
+
+        /* Magia del Acordeón con Grid CSS puro */
+        .card-details-wrapper {
+            display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .semestre-card.active .card-details-wrapper {
+            grid-template-rows: 1fr;
+        }
+        
+        .card-details-inner {
+            overflow: hidden; padding: 0 30px;
+        }
+        
+        .card-details-content {
+            padding-bottom: 24px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 10px;
+        }
+
+        .card-details-content p {
+            font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, 0.85); margin: 0 0 20px;
+        }
+
+        .card-actions {
+            display: flex; gap: 12px; flex-wrap: wrap;
+        }
+
+        /* Botones integrados a la paleta */
+        .btn-primary {
+            display: inline-block; background: var(--c-sandstorm); color: var(--c-seal-brown);
+            font-size: 14px; font-weight: 600; padding: 10px 24px; border-radius: 50px;
+            text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(236, 213, 64, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); background: var(--c-brass); color: #fff; box-shadow: 0 6px 20px rgba(181, 166, 66, 0.5); }
+
+        .btn-ghost {
+            display: inline-block; background: rgba(255, 255, 255, 0.05); color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px; font-weight: 500; padding: 10px 24px; border-radius: 50px;
+            text-decoration: none; transition: all 0.3s ease;
+        }
+        .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--c-sandstorm); color: var(--c-sandstorm); }
+
+        /* ===== CTA (Compact Gradient Igual a index.html) ===== */
+        .cta-section {
+            padding: 60px 22px; text-align: center;
+            background: linear-gradient(135deg, var(--c-grasshopper) 0%, var(--c-army-green) 100%);
+            color: #fff;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .cta-content { max-width: 700px; margin: 0 auto; }
+        .cta-section p { font-size: 18px; font-weight: 600; color: rgba(255, 255, 255, 0.95); margin: 0 auto 20px; }
+
+        .btn-secondary {
+            display: inline-block; background: transparent; border: 2px solid #fff; color: #fff;
+            font-size: 16px; font-weight: 600; padding: 12px 32px; border-radius: 50px; text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover { background: #fff; color: var(--c-army-green); transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .slide-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .slide-left { opacity: 0; transform: translateX(-30px); transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .slide-right { opacity: 0; transform: translateX(30px); transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .fade-in { opacity: 0; transform: scale(0.95); transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .slide-up.visible, .slide-left.visible, .slide-right.visible, .fade-in.visible { opacity: 1; transform: translate(0) scale(1); }
+        .delay-200 { transition-delay: 0.1s; }
+        .delay-400 { transition-delay: 0.2s; }
+        .delay-600 { transition-delay: 0.3s; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .menu { padding: 0 16px; }
+            .menu-icon { display: block; }
+            .navbar {
+                position: fixed; top: 0; right: -100%; left: auto; transform: none; width: 260px; height: 100vh;
+                background: rgba(28, 28, 30, 0.97); backdrop-filter: blur(20px); flex-direction: column; justify-content: center;
+                transition: right 0.4s cubic-bezier(0.65, 0, 0.35, 1); z-index: 9998; display: flex;
+            }
+            .navbar ul { flex-direction: column; gap: 8px; text-align: center; }
+            .navbar a { color: #f5f5f7; font-size: 17px; padding: 12px 30px; opacity: 0.86; }
+            #menu-toggle:checked ~ .navbar { right: 0; }
+            .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 9997; }
+            #menu-toggle:checked ~ .menu-overlay { display: block; }
+            
+            .tree-container { display: none; }
+            
+            .timeline-container { padding-left: 20px; }
+            .timeline-container::before { left: 4px; }
+            .semestre-card::before { left: -22px; width: 10px; height: 10px; }
+            
+            .card-head { padding: 20px; flex-wrap: wrap; }
+            .card-title-group { width: 100%; justify-content: space-between; margin-bottom: 5px;}
+            .card-icon { width: 35px; height: 35px; font-size: 18px; }
+            .card-title h3 { font-size: 18px; }
+            .toggle-icon { display: none; } /* Ocultar chevron en movil para ahorrar espacio */
+            .card-actions { flex-direction: column; }
+            .btn-primary, .btn-ghost { text-align: center; width: 100%; }
+        }
+    </style>
 </head>
 <body>
-    <header class="header header-semestres">
-        <div class="menu container">
+
+    <!-- MENÚ APPLE-STYLE IDÉNTICO AL INDEX -->
+    <div class="menu-container">
+        <div class="menu">
             <a href="index.html" class="logo-img">
                 <img src="img/logo.png" alt="Life Bracelet Logo" class="logo-icon"/>
             </a>
@@ -19,104 +356,164 @@
             <nav class="navbar">
                 <ul>
                     <li><a href="index.html">Home</a></li>
+                    <li><a href="novedades.html">Novedades</a></li>
                     <li><a href="semestres.html" class="active">Semestres</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
                 </ul>
             </nav>
+            <div class="menu-overlay"></div>
         </div>
-        
-        <div class="header-content container">
-            <img src="img/tipografialogo.png" alt="Life Bracelet" class="header-banner fade-in"/>
-            <h1 class="slide-up">Trayectoria del Proyecto</h1>
-            <p class="fade-in delay-200">Aquí encontrarás el proceso del proyecto Life Bracelet dividido por etapas de desarrollo y validación.</p>
+    </div>
+
+    <!-- HERO SECTION (Pantalla Completa) -->
+    <header class="header">
+        <div class="header-banner-container fade-in">
+            <!-- Árboles Animados -->
+            <div class="tree-container tree-left">
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none" width="100%" height="100%"><rect x="45" y="150" width="10" height="50" fill="#321414" /><polygon points="50,10 90,80 10,80" fill="#7A7229" /><polygon points="50,50 95,120 5,120" fill="#4B5320" /><polygon points="50,90 100,160 0,160" fill="#4B5320" /></svg>
+            </div>
+            <div class="tree-container tree-left-2">
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none" width="100%" height="100%"><rect x="46" y="160" width="8" height="40" fill="#321414" /><polygon points="50,20 85,85 15,85" fill="#4B5320" /><polygon points="50,65 90,130 10,130" fill="#7A7229" /><polygon points="50,110 95,170 5,170" fill="#4B5320" /></svg>
+            </div>
+            <div class="tree-container tree-right">
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none" width="100%" height="100%"><rect x="44" y="150" width="12" height="50" fill="#321414" /><polygon points="50,15 95,85 5,85" fill="#4B5320" /><polygon points="50,55 100,125 0,125" fill="#3C341F" /><polygon points="50,100 105,170 -5,170" fill="#4B5320" /></svg>
+            </div>
+            <div class="tree-container tree-right-2">
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none" width="100%" height="100%"><rect x="46" y="160" width="8" height="40" fill="#321414" /><polygon points="50,25 85,85 15,85" fill="#7A7229" /><polygon points="50,65 90,130 10,130" fill="#4B5320" /><polygon points="50,110 95,170 5,170" fill="#7A7229" /></svg>
+            </div>
+
+            <div class="banner-overlay">
+                <h1 class="banner-title">Trayectoria del Proyecto</h1>
+                <p class="banner-subtitle">Aquí encontrarás el proceso del proyecto Agrivoltaica dividido por etapas de desarrollo y validación.</p>
+            </div>
+            
+            <div class="scroll-indicator">Explorar Fases</div>
         </div>
     </header>
 
-    <main class="section-padding bg-dark">
+    <!-- TIMELINE ACORDEÓN -->
+    <main class="section-padding semestres-section">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
         <div class="container">
             <h2 class="section-title slide-up">🚀 Fases de Desarrollo</h2>
             
-            <div class="semestres-options card-group" id="semestres-options">
-                <article 
-                    class="semestre-card slide-left" 
-                    role="button" tabindex="0" 
-                    aria-expanded="false" 
-                    data-target="s1"
-                >
+            <div class="timeline-container" id="semestres-options">
+                
+                <!-- Semestre 1 -->
+                <article class="semestre-card slide-left" role="button" tabindex="0" aria-expanded="false">
                     <div class="card-head">
-                        <span class="card-icon">1</span>
-                        <div class="card-title">
-                            <h3>Semestre 1</h3>
-                            <p class="card-sub">Conceptualización y Detección del Problema.</p>
+                        <div class="card-title-group">
+                            <span class="card-icon">1</span>
+                            <div class="card-title">
+                                <h3>Semestre 1</h3>
+                                <p class="card-sub">Conceptualización y Detección del Problema.</p>
+                            </div>
                         </div>
                         <span class="toggle-icon" aria-hidden="true">▾</span>
                     </div>
-                    <div class="card-details" id="s1" aria-hidden="true">
-                        <p>En el primer semestre se definieron la misión, la necesidad y el alcance del proyecto. Se validaron las hipótesis iniciales y se documentaron los principales casos de uso y requerimientos.</p>
-                        <div class="card-actions">
-                            <a href="semestre1.html" class="btn btn-small">Ver Semestre 1</a>
-                        
+                    <div class="card-details-wrapper">
+                        <div class="card-details-inner">
+                            <div class="card-details-content">
+                                <p>En el primer semestre se definieron la misión, la necesidad y el alcance del proyecto. Se validaron las hipótesis iniciales y se documentaron los principales casos de uso y requerimientos.</p>
+                                <div class="card-actions">
+                                    <a href="semestre1.html" class="btn-primary">Ver Semestre 1</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </article>
                 
-                <article 
-                    class="semestre-card slide-up delay-200" 
-                    role="button" tabindex="0" 
-                    aria-expanded="false" 
-                    data-target="s2"
-                >
+                <!-- Semestre 2 -->
+                <article class="semestre-card slide-left delay-200" role="button" tabindex="0" aria-expanded="false">
                     <div class="card-head">
-                        <span class="card-icon">2</span>
-                        <div class="card-title">
-                            <h3>Semestre 2</h3>
-                            <p class="card-sub">Selección de Componentes y Diseño de Prototipo Básico.</p>
+                        <div class="card-title-group">
+                            <span class="card-icon">2</span>
+                            <div class="card-title">
+                                <h3>Semestre 2</h3>
+                                <p class="card-sub">Selección de Componentes y Diseño de Prototipo Básico.</p>
+                            </div>
                         </div>
                         <span class="toggle-icon" aria-hidden="true">▾</span>
                     </div>
-                    <div class="card-details" id="s2" aria-hidden="true">
-                        <p>El segundo semestre se enfocó en la selección de sensores, microcontroladores y en la creación de los primeros prototipos funcionales. Se realizaron pruebas de integración y mediciones preliminares.</p>
-                        <div class="card-actions">
-                            <a href="semestre2.html" class="btn btn-small">Ver Semestre 2</a>
-                            <a href="img/EstadodelArte.pdf" class="btn btn-ghost" target="_blank">Descargar Estado del Arte</a>
+                    <div class="card-details-wrapper">
+                        <div class="card-details-inner">
+                            <div class="card-details-content">
+                                <p>El segundo semestre se enfocó en la selección de sensores, microcontroladores y en la creación de los primeros prototipos funcionales. Se realizaron pruebas de integración y mediciones preliminares.</p>
+                                <div class="card-actions">
+                                    <a href="semestre2.html" class="btn-primary">Ver Semestre 2</a>
+                                    <a href="img/EstadodelArte.pdf" class="btn-ghost" target="_blank">Descargar Estado del Arte</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </article>
                 
-                <article 
-                    class="semestre-card slide-right delay-400" 
-                    role="button" tabindex="0" 
-                    aria-expanded="false" 
-                    data-target="s3"
-                >
+                <!-- Semestre 3 -->
+                <article class="semestre-card slide-left delay-400" role="button" tabindex="0" aria-expanded="false">
                     <div class="card-head">
-                        <span class="card-icon">3</span>
-                        <div class="card-title">
-                            <h3>Semestre 3</h3>
-                            <p class="card-sub">Validación Funcional, Algoritmos y Optimización.</p>
+                        <div class="card-title-group">
+                            <span class="card-icon">3</span>
+                            <div class="card-title">
+                                <h3>Semestre 3</h3>
+                                <p class="card-sub">Validación Funcional, Algoritmos y Optimización.</p>
+                            </div>
                         </div>
                         <span class="toggle-icon" aria-hidden="true">▾</span>
                     </div>
-                    <div class="card-details" id="s3" aria-hidden="true">
-                        <p>En este semestre se implementaron los algoritmos de detección, se validó el rendimiento del prototipo y se optimizó consumo y fiabilidad. Se recorrieron ciclos de prueba-errores y ajuste de parámetros.</p>
-                        <div class="card-actions">
-                            <a href="semestre3.html" class="btn btn-small">Ver Semestre 3</a>
-                            <a href="img/LifeBracelet3erSem.pdf" class="btn btn-ghost" target="_blank">Descargar Avance del Proyecto</a>
+                    <div class="card-details-wrapper">
+                        <div class="card-details-inner">
+                            <div class="card-details-content">
+                                <p>En este semestre se implementaron los algoritmos de detección, se validó el rendimiento del prototipo y se optimizó consumo y fiabilidad. Se recorrieron ciclos de prueba-errores y ajuste de parámetros.</p>
+                                <div class="card-actions">
+                                    <a href="semestre3.html" class="btn-primary">Ver Semestre 3</a>
+                                    <a href="img/LifeBracelet3erSem.pdf" class="btn-ghost" target="_blank">Descargar Avance del Proyecto</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </article>
+
+                <!-- Semestre 4 -->
+                <article class="semestre-card slide-left delay-600" role="button" tabindex="0" aria-expanded="false">
+                    <div class="card-head">
+                        <div class="card-title-group">
+                            <span class="card-icon">4</span>
+                            <div class="card-title">
+                                <h3>Semestre 4</h3>
+                                <p class="card-sub">Migración de proyecto a Agrivoltaica</p>
+                            </div>
+                        </div>
+                        <span class="toggle-icon" aria-hidden="true">▾</span>
+                    </div>
+                    <div class="card-details-wrapper">
+                        <div class="card-details-inner">
+                            <div class="card-details-content">
+                                <p>En el cuarto semestre se realizaron las pruebas finales con usuarios, se afinó la estética y usabilidad del hardware, y se consolidó el proyecto para su presentación y lanzamiento oficial.</p>
+                                <div class="card-actions">
+                                    <a href="semestre4.html" class="btn-primary">Ver Semestre 4</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
             </div>
-            
-            <section class="cta cta-semestres fade-in delay-600">
-                <p>¿Interesado en los detalles técnicos de cada fase?</p>
-                <a href="#semestres-options" class="btn">Explora los Documentos</a>
-            </section>
         </div>
     </main>
     
+    <!-- CTA COMPACTO -->
+    <section class="cta-section">
+        <div class="cta-content fade-in">
+            <p>¿Te interesa saber quiénes están detrás de este proyecto?</p>
+            <a href="nosotros.html" class="btn-secondary">Conocer al Equipo</a>
+        </div>
+    </section>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // IntersectionObserver (ya tenías este patrón)
-            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.08 };
+        document.addEventListener('DOMContentLoaded', function() {
+            // IntersectionObserver Animaciones Scroll
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -127,52 +524,55 @@
             }, observerOptions);
             document.querySelectorAll('.slide-up, .slide-left, .slide-right, .fade-in').forEach(el => observer.observe(el));
 
-            // Acordeón dinámico para las tarjetas de semestres
-            const cards = Array.from(document.querySelectorAll('.semestre-card'));
-            function closeAll(except = null) {
-                cards.forEach(c => {
-                    if (c !== except) {
-                        c.classList.remove('active');
-                        c.setAttribute('aria-expanded', 'false');
-                        const details = document.getElementById(c.dataset.target);
-                        if (details) details.setAttribute('aria-hidden', 'true');
-                    }
-                });
-            }
-
-            function toggleCard(card) {
-                const targetId = card.dataset.target;
-                const details = document.getElementById(targetId);
-                const isActive = card.classList.contains('active');
-                if (isActive) {
-                    card.classList.remove('active');
-                    card.setAttribute('aria-expanded', 'false');
-                    if (details) details.setAttribute('aria-hidden', 'true');
-                } else {
-                    closeAll(card);
-                    card.classList.add('active');
-                    card.setAttribute('aria-expanded', 'true');
-                    if (details) details.setAttribute('aria-hidden', 'false');
-                    // Scroll suave para traer la tarjeta visible en pantallas pequeñas
-                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
+            // LÓGICA DEL ACORDEÓN (Smooth Grid-Row Transition)
+            const cards = document.querySelectorAll('.semestre-card');
 
             cards.forEach(card => {
-                // click
-                card.addEventListener('click', (e) => {
-                    // evitar que clicks en enlaces internos disparen el toggle general
+                const head = card.querySelector('.card-head');
+                
+                // Evento click en la cabecera del acordeón
+                head.addEventListener('click', function(e) {
+                    // Prevenir si se hace clic directamente en botones de acción internos (por si acaso cambian diseño futuro)
                     if (e.target.closest('a')) return;
-                    toggleCard(card);
+
+                    const isActive = card.classList.contains('active');
+                    
+                    // Cerrar todas las demás tarjetas
+                    cards.forEach(c => {
+                        c.classList.remove('active');
+                        c.setAttribute('aria-expanded', 'false');
+                    });
+                    
+                    // Si no estaba activa, abrirla
+                    if (!isActive) {
+                        card.classList.add('active');
+                        card.setAttribute('aria-expanded', 'true');
+                    }
                 });
-                // keyboard (Enter o Space)
-                card.addEventListener('keydown', (e) => {
+
+                // Accesibilidad con teclado
+                card.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        toggleCard(card);
+                        head.click();
                     }
                 });
             });
+
+            // Abrir el Semestre 1 por defecto al cargar la página
+            if(cards.length > 0) {
+                cards[0].classList.add('active');
+                cards[0].setAttribute('aria-expanded', 'true');
+            }
+            
+            // Cierre del menú móvil al hacer clic fuera
+            const menuToggle = document.getElementById('menu-toggle');
+            const menuOverlay = document.querySelector('.menu-overlay');
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', () => {
+                    menuToggle.checked = false;
+                });
+            }
         });
     </script>
 </body>
